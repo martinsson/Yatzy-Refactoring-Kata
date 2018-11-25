@@ -1,6 +1,6 @@
 import assert from 'assert';
 
-import {Yatzy, frequencies} from '../src/Yatzy';
+import {frequencies, groupBySame, Yatzy} from '../src/Yatzy';
 
 describe('Chance', () => {
     it('scores sum of all dice', () => {
@@ -118,16 +118,35 @@ describe('Full house', () => {
     });
 });
 
+function removeZeros(frequencies1: any) {
+    let result: any = {}
+    Object.keys(frequencies1).forEach(key => {
+        if (frequencies1[key] !== 0) {
+            result[key] = frequencies1[key]
+        }
+    })
+    return result
+}
+
 describe('frequencies', () => {
     it('counts number of times a number appears in a list', () => {
-        assert.deepStrictEqual(frequencies([]), {})
-        assert.deepStrictEqual(frequencies([3]), {3: 1})
-        assert.deepStrictEqual(frequencies([1, 2]), {1: 1, 2: 1})
+        assert.deepStrictEqual(removeZeros(frequencies([])), {})
+        assert.deepStrictEqual(removeZeros(frequencies([3])), {3: 1})
+        assert.deepStrictEqual(removeZeros(frequencies([1, 2])), {1: 1, 2: 1})
 
         let found = Object.entries(frequencies([3, 3])).find(([n, freq]) => {
             return freq === 2
         })
         assert.deepStrictEqual(found, ["3", 2])
+    });
+});
+
+describe('groupBySame', () => {
+    it('groups dice into groups with the same value', () => {
+        assert.deepStrictEqual(groupBySame([1]), [[1]])
+        assert.deepStrictEqual(groupBySame([2]), [[2]])
+        assert.deepStrictEqual(groupBySame([2, 2]), [[2, 2]])
+        assert.deepStrictEqual(groupBySame([2, 2, 3]), [[2, 2], [3]])
     });
 
 });
